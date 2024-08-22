@@ -1,8 +1,6 @@
 
 import AiComponent from '@/components/ai-component';
 
-
-
 export default async function Page() {
   // const {boards, authUrl} = await getBoards();
   // run()

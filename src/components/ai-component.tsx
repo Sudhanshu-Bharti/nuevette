@@ -3,31 +3,31 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
 import { useState } from "react"
+import { useRouter } from 'next/navigation'
 
 export default function AiComponent() {
   const [prompt, setPrompt] = useState("")
-  const [boardUrl, setBoardUrl] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const router = useRouter()
   
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!prompt.trim()) {
       setError("Please enter a topic for the learning path.");
-      setIsLoading(false);
       return;
     }
     setIsLoading(true)
     setError("")
-    setBoardUrl("")
     
     try {
       const response = await axios.post("/api/prompt", { prompt }) 
       console.log(response.data)
-      if (response.data.boardUrl) {
-        setBoardUrl(response.data.boardUrl)
+      if (response.data.learningPath) {
+        // Redirect to the mind map page with the learning path data
+        router.push(`/mind-map?data=${encodeURIComponent(JSON.stringify(response.data.learningPath))}`)
       } else {
-        setError("Failed to generate Miro board.")
+        setError("Failed to generate learning path.")
       }
     } catch (error) {
       console.error("Error fetching response:", error)
@@ -44,7 +44,7 @@ export default function AiComponent() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Learning Path Generator
           </h1>
-          <p className="text-xl text-muted-foreground">Enter a topic to generate a learning path in Miro.</p>
+          <p className="text-xl text-muted-foreground">Enter a topic to generate a learning path mind map.</p>
           <form onSubmit={handleSubmit} className="flex items-center space-x-2">
             <Textarea
               value={prompt}
@@ -65,18 +65,6 @@ export default function AiComponent() {
         {error && (
           <div className="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             {error}
-          </div>
-        )}
-        {boardUrl && (
-          <div className="mt-12 space-y-6 rounded-md border border-input bg-background p-6">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Miro Board Generated</h2>
-            <p>Your learning path has been created in Miro. Click the button below to view it:</p>
-            <Button
-              onClick={() => window.open(boardUrl, '_blank')}
-              className="mt-4"
-            >
-              Open Miro Board
-            </Button>
           </div>
         )}
       </div>
