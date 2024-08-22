@@ -20,6 +20,7 @@ export default function initMiroAPI() {
   return {
     miro: new Miro({
       storage: {
+        //@ts-ignore
         get: () => {
           return getCookieValue();
         },
