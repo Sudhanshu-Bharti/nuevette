@@ -85,8 +85,8 @@ const MindMap: React.FC<MindMapProps> = ({ learningPath }) => {
   }, [learningPath]);
 
   const { nodes: initialNodesResult, edges: initialEdgesResult } = createNodesAndEdges();
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodesResult);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdgesResult);
+  const [nodes, _setNodes, onNodesChange] = useNodesState(initialNodesResult);
+  const [edges, _setEdges, onEdgesChange] = useEdgesState(initialEdgesResult);
 
   return (
     <div className="w-full h-full">
