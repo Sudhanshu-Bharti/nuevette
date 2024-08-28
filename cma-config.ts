@@ -1,20 +1,16 @@
 import pc from 'picocolors';
-import {DEPENDENCIES} from '../../../../src/dependencies';
-import {
-  Framework,
-  FrameworkTypes,
-  FrameworkVariants,
-} from '../../../../src/interfaces';
-import {SharedTemplates} from '../../../../src/generatedTemplatesList';
 
-const CONFIG: Framework = {
-  type: FrameworkTypes.UNIVERSAL,
+const DEPENDENCIES = {
+  next: { next: '^14.0.0' },
+  react: { react: '^18.2.0' },
+  reactDom: { 'react-dom': '^18.2.0' },
+  dotenv: { dotenv: '^16.0.3' },
+};
+
+const CONFIG = {
   name: 'nextjs',
-  display: 'Next.js framework with Web SDK and API client installed',
+  display: 'Next.js framework',
   color: pc.magenta,
-  sdkUri: 'http://localhost:3000',
-  redirectUri: 'http://localhost:3000/api/redirect',
-  scopes: ['boards:read', 'boards:write'],
   customPackageJSONFields: {
     scripts: {
       build: 'next build',
@@ -32,48 +28,40 @@ const CONFIG: Framework = {
       ],
     },
   },
-  templates: [SharedTemplates.ClientAssets],
   variants: [
     {
-      name: FrameworkVariants.js,
+      name: 'js',
       display: 'JavaScript',
       color: pc.yellow,
       deps: {
         dependencies: {
           ...DEPENDENCIES.next,
-          ...DEPENDENCIES.miroNode,
-          ...DEPENDENCIES.mirotone,
           ...DEPENDENCIES.react,
           ...DEPENDENCIES.reactDom,
           ...DEPENDENCIES.dotenv,
-          ...DEPENDENCIES.cookie,
         },
         devDependencies: {},
       },
     },
     {
-      name: FrameworkVariants.ts,
+      name: 'ts',
       display: 'TypeScript',
       color: pc.blue,
       deps: {
         dependencies: {
           ...DEPENDENCIES.next,
-          ...DEPENDENCIES.miroNode,
-          ...DEPENDENCIES.mirotone,
           ...DEPENDENCIES.react,
           ...DEPENDENCIES.reactDom,
           ...DEPENDENCIES.dotenv,
-          ...DEPENDENCIES.cookie,
         },
         devDependencies: {
-          ...DEPENDENCIES.miroWebSdkTypes,
-          ...DEPENDENCIES.typescript,
-          ...DEPENDENCIES.nodeTypes,
-          ...DEPENDENCIES.reactTypes,
-          ...DEPENDENCIES.cookieTypes,
+          typescript: '^5.0.0',
+          '@types/node': '^18.0.0',
+          '@types/react': '^18.0.0',
         },
       },
     },
   ],
 };
+
 export default CONFIG;
