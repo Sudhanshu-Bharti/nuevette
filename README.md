@@ -20,7 +20,6 @@
   <p align="center">
     A web application that generates customized learning paths on any topic!
     <br />
-    <a href="https://github.com/Sudhanshu-Bharti/nuevette"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/Sudhanshu-Bharti/nuevette">View Demo</a>
