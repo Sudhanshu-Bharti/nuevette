@@ -26,13 +26,16 @@
     "react-dom": "^18.2.0",
     "reactflow": "^11.11.4",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@mirohq/websdk-types": "latest",
     "@types/cookie": "^0.5.1",
     "@types/node": "^18.19.45",
     "@types/react": "^18.0.24",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "mini-css-extract-plugin": "^2.9.0",
     "postcss": "^8.4.41",

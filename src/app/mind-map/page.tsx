@@ -1,21 +1,10 @@
 "use client"
-
-import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import MindMap from './_components/MindMap'
-import { LearningPath } from '@/types/LearningPathTypes'
 import { BrowserComponent } from '@/components/ui/browser-component'
+import { useLearningPathStore } from '@/store'
 
 export default function MindMapPage() {
-  const searchParams = useSearchParams()
-  const [learningPath, setLearningPath] = useState<LearningPath | null>(null)
-
-  useEffect(() => {
-    const data = searchParams.get('data')
-    if (data) {
-      setLearningPath(JSON.parse(decodeURIComponent(data)))
-    }
-  }, [searchParams])
+  const learningPath = useLearningPathStore((state) => state.learningPath)
 
   if (!learningPath) {
     return (

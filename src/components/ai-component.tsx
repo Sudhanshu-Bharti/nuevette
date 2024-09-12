@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button"
 import axios from "axios"
 import { useState } from "react"
 import { useRouter } from 'next/navigation'
+import { useLearningPathStore } from "@/store"
 
 export default function AiComponent() {
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
-  
+  const setLearningPath = useLearningPathStore((state)=> state.setLearningPath)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!prompt.trim()) {
@@ -24,8 +26,8 @@ export default function AiComponent() {
       const response = await axios.post("/api/prompt", { prompt }) 
       console.log(response.data)
       if (response.data.learningPath) {
-        // Redirect to the mind map page with the learning path data
-        router.push(`/mind-map?data=${encodeURIComponent(JSON.stringify(response.data.learningPath))}`)
+        setLearningPath(response.data.learningPath)
+        router.push('/mind-map')
       } else {
         setError("Failed to generate learning path.")
       }
