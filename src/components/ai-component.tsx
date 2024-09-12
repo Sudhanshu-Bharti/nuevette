@@ -1,43 +1,72 @@
 "use client"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import axios from "axios"
-import { useState } from "react"
-import { useRouter } from 'next/navigation'
-import { useLearningPathStore } from "@/store"
+import React, { useState, useEffect } from 'react';
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import axios from "axios";
+import { useRouter } from 'next/navigation';
+import { useLearningPathStore } from "@/store";
+
+const ProgressBar = ({ progress } : {progress : any}) => (
+  <div className="w-full max-w-md mx-auto">
+    <Progress value={progress} className="w-full" />
+    <p className="text-sm text-center mt-2 text-muted-foreground">
+      Generating your learning path: {progress.toFixed(0)}%
+    </p>
+  </div>
+);
 
 export default function AiComponent() {
-  const [prompt, setPrompt] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
-  const setLearningPath = useLearningPathStore((state)=> state.setLearningPath)
+  const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const setLearningPath = useLearningPathStore((state) => state.setLearningPath);
+
+  useEffect(() => {
+    let interval:any;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prevProgress + 100 / 35; // Assuming 35 seconds total time
+        });
+      }, 1000);
+    } else {
+      setProgress(0);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!prompt.trim()) {
       setError("Please enter a topic for the learning path.");
       return;
     }
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
     
     try {
-      const response = await axios.post("/api/prompt", { prompt }) 
-      console.log(response.data)
+      const response = await axios.post("/api/prompt", { prompt });
+      console.log(response.data);
       if (response.data.learningPath) {
-        setLearningPath(response.data.learningPath)
-        router.push('/mind-map')
+        setLearningPath(response.data.learningPath);
+        router.push('/mind-map');
       } else {
-        setError("Failed to generate learning path.")
+        setError("Failed to generate learning path.");
       }
     } catch (error) {
-      console.error("Error fetching response:", error)
-      setError("An error occurred while generating the learning path.")
+      console.error("Error fetching response:", error);
+      setError("An error occurred while generating the learning path.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
   
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
@@ -46,23 +75,29 @@ export default function AiComponent() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Learning Path Generator
           </h1>
-          <p className="text-xl text-muted-foreground">Enter a topic to generate a learning path mind map.</p>
-          <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-            <Textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="E.g., Learning path for NextJS 14"
-              className="flex-1 rounded-md border border-input bg-background px-4 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary-foreground"
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              className="rounded-md bg-primary px-4 py-2 text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-1 focus:ring-primary-foreground"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Generating...' : 'Generate'}
-            </Button>
-          </form>
+          {!isLoading && (
+            <p className="text-xl text-muted-foreground">
+              Enter a topic to generate a learning path mind map.
+            </p>
+          )}
+          {isLoading ? (
+            <ProgressBar progress={progress} />
+          ) : (
+            <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+              <Textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="E.g., Learning path for NextJS 14"
+                className="flex-1 rounded-md border border-input bg-background px-4 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary-foreground"
+              />
+              <Button
+                type="submit"
+                className="rounded-md bg-primary px-4 py-2 text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-1 focus:ring-primary-foreground"
+              >
+                Generate
+              </Button>
+            </form>
+          )}
         </div>
         {error && (
           <div className="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -71,5 +106,5 @@ export default function AiComponent() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -18,7 +18,6 @@ export default function Layout({children } : {children: React.ReactNode}) {
             src="https://miro.com/app/static/sdk/v2/miro.js"
             strategy="beforeInteractive"
           />
-        {/* <MiroSDKInit /> */}
         {children}
       </body>
     </html>

@@ -10,6 +10,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.16.0",
     "@mirohq/miro-api": "^2.2.0",
+    "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "axios": "^1.7.3",
     "cheerio": "^1.0.0",

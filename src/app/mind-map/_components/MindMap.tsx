@@ -101,7 +101,7 @@ const MindMap: React.FC<MindMapProps> = ({ learningPath }) => {
       >
         <Background color="#e0e0e0" />
         <Controls className="bg-white rounded-lg shadow-md" />
-        <MiniMap className="rounded-lg shadow-md" />
+        <MiniMap maskColor='rgb(24, 24, 24, 0.6)' />
       </ReactFlow>
     </div>
   );
