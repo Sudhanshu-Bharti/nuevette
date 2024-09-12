@@ -3,6 +3,7 @@ import { genAI } from '@/utils/gemini';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
+
 const SERP_API_KEY = process.env.NEXT_PUBLIC_SERP_API_KEY || "";
 
 const docUrls: { [key: string]: string } = {
