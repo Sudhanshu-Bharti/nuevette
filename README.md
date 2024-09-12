@@ -174,7 +174,6 @@ Project Link: [https://github.com/Sudhanshu-Bharti/nuevette](https://github.com/
 * [Gemini API](https://deepmind.google/technologies/gemini/)
 * [SERP API](https://serpapi.com/)
 * [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
