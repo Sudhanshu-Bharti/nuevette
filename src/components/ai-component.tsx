@@ -78,7 +78,8 @@ export default function AiComponent() {
           {!isLoading && (
             <p className="text-xl text-muted-foreground">
               Enter a topic to generate a learning path mind map.
-            </p>
+            </p> 
+            
           )}
           {isLoading ? (
             <ProgressBar progress={progress} />
@@ -97,6 +98,7 @@ export default function AiComponent() {
                 Generate
               </Button>
             </form>
+            
           )}
         </div>
         {error && (
@@ -104,6 +106,9 @@ export default function AiComponent() {
             {error}
           </div>
         )}
+      </div>
+      <div className='flex items-center justify-center mt-5' >
+        Made with ❤️ by Nuevette
       </div>
     </div>
   );

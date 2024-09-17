@@ -14,10 +14,6 @@ export default function Layout({children } : {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body className={`${dmSans.className} ${spaceMono.className} `}>
-      <Script
-            src="https://miro.com/app/static/sdk/v2/miro.js"
-            strategy="beforeInteractive"
-          />
         {children}
       </body>
     </html>

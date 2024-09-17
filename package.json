@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.16.0",
-    "@mirohq/miro-api": "^2.2.0",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "axios": "^1.7.3",
@@ -20,7 +19,6 @@
     "dotenv": "^16.0.3",
     "lucide-react": "^0.427.0",
     "mini-svg-data-uri": "^1.4.4",
-    "mirotone": "5",
     "next": "^14.2.5",
     "picocolors": "^1.0.1",
     "react": "^18.2.0",
@@ -32,7 +30,6 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@mirohq/websdk-types": "latest",
     "@types/cookie": "^0.5.1",
     "@types/node": "^18.19.45",
     "@types/react": "^18.0.24",
