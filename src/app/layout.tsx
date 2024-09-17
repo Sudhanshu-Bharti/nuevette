@@ -1,5 +1,4 @@
 import React from 'react';
-import Script from 'next/script';
 
 import { DM_Sans, Space_Mono } from 'next/font/google'
 
