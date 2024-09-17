@@ -8,7 +8,6 @@ import ReactFlow, {
   useEdgesState,
   Background,
   Controls,
-  MiniMap
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { LearningPath } from '@/types/LearningPathTypes';
