@@ -88,7 +88,7 @@ function createEnhancedPrompt(technology: string, docs: string): string {
             - Any prerequisites or dependencies
             - Suggested resources (official documentation sections, books, courses, or websites)
 
-          Ensure the learning path is logically structured, progressing from foundational concepts to more advanced topics. 
+          Ensure the learning path is logically structured, progressing from foundational concepts to more advanced topics. Do not include placeholder text or comments like "Other topics would follow in a similar structure."
 
           The output should be in the following JSON format:
           {
