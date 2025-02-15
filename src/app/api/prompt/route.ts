@@ -1,21 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { genAI } from '@/utils/gemini';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-
+import { NextRequest, NextResponse } from "next/server";
+import { genAI } from "@/utils/gemini";
+import axios from "axios";
+import * as cheerio from "cheerio";
 
 const SERP_API_KEY = process.env.NEXT_PUBLIC_SERP_API_KEY || "";
 
 const docUrls: { [key: string]: string } = {
-  'react': 'https://reactjs.org/docs/getting-started.html',
-  'nextjs': 'https://nextjs.org/docs',
-  'python': 'https://docs.python.org/3/',
+  react: "https://reactjs.org/docs/getting-started.html",
+  nextjs: "https://nextjs.org/docs",
+  python: "https://docs.python.org/3/",
 };
 
 async function searchForDocumentation(technology: string): Promise<string> {
   const query = `${technology} official documentation`;
-  const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(query)}&api_key=${SERP_API_KEY}`;
-  
+  const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(
+    query
+  )}&api_key=${SERP_API_KEY}`;
+
   try {
     const response = await axios.get(url);
     const organicResults = response.data.organic_results;
@@ -23,52 +24,58 @@ async function searchForDocumentation(technology: string): Promise<string> {
       return organicResults[0].link;
     }
   } catch (error) {
-    console.error('Error searching for documentation:', error);
+    console.error("Error searching for documentation:", error);
   }
-  
-  return '';
+
+  return "";
 }
 
 async function fetchOfficialDocumentation(technology: string): Promise<string> {
   let url = docUrls[technology.toLowerCase()];
-  
+
   if (!url) {
     url = await searchForDocumentation(technology);
   }
-  
+
   if (!url) {
     console.warn(`Couldn't find documentation URL for ${technology}`);
-    return '';
+    return "";
   }
 
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-    const content = $('body').text();
+    const content = $("body").text();
     return content;
   } catch (error) {
     console.error(`Failed to fetch documentation for ${technology}:`, error);
-    return '';
+    return "";
   }
 }
 
 function processDocumentationData(rawDocs: string): string {
-  let processed = rawDocs.replace(/\s+/g, ' ').trim();
-  
-  const sections = ['Introduction', 'Getting Started', 'Core Concepts', 'API Reference', 'Advanced Guides'];
-  let result = '';
-  
+  let processed = rawDocs.replace(/\s+/g, " ").trim();
+
+  const sections = [
+    "Introduction",
+    "Getting Started",
+    "Core Concepts",
+    "API Reference",
+    "Advanced Guides",
+  ];
+  let result = "";
+
   for (const section of sections) {
     const index = processed.indexOf(section);
     if (index !== -1) {
-      result += processed.slice(index, index + 500) + '\n\n';
+      result += processed.slice(index, index + 500) + "\n\n";
     }
   }
-  
+
   if (result.length === 0) {
     result = processed.slice(0, 2000);
   }
-  
+
   return result;
 }
 
@@ -113,11 +120,11 @@ function createEnhancedPrompt(technology: string, docs: string): string {
               }
             ]
           }
-          `
+          `;
 }
 
 function cleanJsonResponse(response: string): string {
-  response = response.replace(/```json\n|\n```/g, '');
+  response = response.replace(/```json\n|\n```/g, "");
   return response.trim();
 }
 
@@ -126,7 +133,10 @@ export async function POST(request: NextRequest) {
     const { prompt } = await request.json();
 
     if (!prompt) {
-      return NextResponse.json({ message: "Prompt is required", status: 400 }, { status: 400 });
+      return NextResponse.json(
+        { message: "Prompt is required", status: 400 },
+        { status: 400 }
+      );
     }
 
     const officialDocs = await fetchOfficialDocumentation(prompt);
@@ -137,7 +147,7 @@ export async function POST(request: NextRequest) {
 
     const result = await model.generateContent(enhancedPrompt);
     let structuredData;
-    
+
     try {
       const cleanedResponse = cleanJsonResponse(result.response.text());
       structuredData = JSON.parse(cleanedResponse);
@@ -145,12 +155,18 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       console.error("Failed to parse Gemini response:", error);
       console.log("Raw response:", result.response.text());
-      return NextResponse.json({ message: "Failed to parse AI response", status: 500 }, { status: 500 });
+      return NextResponse.json(
+        { message: "Failed to parse AI response", status: 500 },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ learningPath: structuredData });
   } catch (error) {
     console.error("Error in API route:", error);
-    return NextResponse.json({ message: "An error occurred", status: 500 }, { status: 500 });
+    return NextResponse.json(
+      { message: "An error occurred", status: 500 },
+      { status: 500 }
+    );
   }
 }

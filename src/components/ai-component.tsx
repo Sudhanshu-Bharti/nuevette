@@ -1,13 +1,15 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+"use client";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import axios from "axios";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useLearningPathStore } from "@/store";
+import { addToRecentPaths } from "@/lib/localStorage";
+import { v4 as uuidv4 } from "uuid";
 
-const ProgressBar = ({ progress } : {progress : any}) => (
+const ProgressBar = ({ progress }: { progress: any }) => (
   <div className="w-full max-w-md mx-auto">
     <Progress value={progress} className="w-full" />
     <p className="text-sm text-center mt-2 text-muted-foreground">
@@ -22,10 +24,13 @@ export default function AiComponent() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const router = useRouter();
-  const setLearningPath = useLearningPathStore((state) => state.setLearningPath);
+  // const { addRecentPath } = useLearningPathStore();
+  const setLearningPath = useLearningPathStore(
+    (state) => state.setLearningPath
+  );
 
   useEffect(() => {
-    let interval:any;
+    let interval: any;
     if (isLoading) {
       interval = setInterval(() => {
         setProgress((prevProgress) => {
@@ -50,13 +55,18 @@ export default function AiComponent() {
     }
     setIsLoading(true);
     setError("");
-    
+
     try {
       const response = await axios.post("/api/prompt", { prompt });
-      console.log(response.data);
       if (response.data.learningPath) {
-        setLearningPath(response.data.learningPath);
-        router.push('/mind-map');
+        const pathWithId = {
+          ...response.data.learningPath,
+          id: uuidv4(),
+          topics: response.data.learningPath.topics || [], // Ensure topics exists
+        };
+        setLearningPath(pathWithId);
+        addToRecentPaths(pathWithId);
+        router.push(`/mindmap/${pathWithId.id}`);
       } else {
         setError("Failed to generate learning path.");
       }
@@ -67,24 +77,26 @@ export default function AiComponent() {
       setIsLoading(false);
     }
   };
-  
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center py-16 bg-background">
       <div className="max-w-2xl w-full px-4 sm:px-6 lg:px-8">
         <div className="space-y-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Learning Path Generator
+            What can I help you learn?
           </h1>
           {!isLoading && (
             <p className="text-xl text-muted-foreground">
               Enter a topic to generate a learning path mind map.
-            </p> 
-            
+            </p>
           )}
           {isLoading ? (
             <ProgressBar progress={progress} />
           ) : (
-            <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center space-x-2"
+            >
               <Textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
@@ -98,7 +110,6 @@ export default function AiComponent() {
                 Generate
               </Button>
             </form>
-            
           )}
         </div>
         {error && (
@@ -107,7 +118,7 @@ export default function AiComponent() {
           </div>
         )}
       </div>
-      <div className='flex items-center justify-center mt-5' >
+      <div className="flex items-center justify-center mt-5">
         Made with ❤️ by Nuevette
       </div>
     </div>
